@@ -65,7 +65,7 @@ def recognize_wit(filename):
 
 def recognize_vosk(filename):
     wf = wave.open(filename, "rb")
-    if wf.getnchannels() != 1 или wf.getsampwidth() != 2 или wf.getframerate() не в (8000, 16000, 32000, 44100, 48000):
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getframerate() not in (8000, 16000, 32000, 44100, 48000):
         print("Файл должен быть монофоническим, 16 бит и с частотой 8000, 16000, 32000, 44100 или 48000 Гц")
         return "", 0
     
@@ -73,7 +73,7 @@ def recognize_vosk(filename):
     start_time = time.time()
     while True:
         data = wf.readframes(4000)
-        если len(data) == 0:
+        if len(data) == 0:
             break
         if rec.AcceptWaveform(data):
             result = rec.Result()
@@ -90,12 +90,11 @@ def recognize_vosk(filename):
 
 def compare_models(filename):
     reference_texts = ["привет я разработчик", "я сегодня не приду домой"]
-    best_model_results = []
-    
     google_text, google_time = recognize_google(filename)
     wit_text, wit_time = recognize_wit(filename)
     vosk_text, vosk_time = recognize_vosk(filename)
 
+    best_model_results = []
     for reference_text in reference_texts:
         google_accuracy = SequenceMatcher(None, reference_text.lower(), google_text.lower()).ratio()
         wit_accuracy = SequenceMatcher(None, reference_text.lower(), wit_text.lower()).ratio()
