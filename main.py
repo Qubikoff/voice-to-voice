@@ -6,13 +6,12 @@ def main():
     filename = "input.wav"
     while True:
         record_audio(filename)
-        recognized_texts = compare_models(filename)
+        recognized_text = compare_models(filename)
         
-        for recognized_text in recognized_texts:
-            response_text = respond_to_text(recognized_text)
-            text_to_speech(response_text)
-            print(f"Распознанный текст: {recognized_text}")
-            print(f"Ответ: {response_text}")
+        response_text = respond_to_text(recognized_text)
+        text_to_speech(response_text)
+        print(f"Распознанный текст: {recognized_text}")
+        print(f"Ответ: {response_text}")
         
         os.remove(filename)
         
