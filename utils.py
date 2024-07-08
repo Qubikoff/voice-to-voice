@@ -1,7 +1,7 @@
 import pyaudio
 import wave
 from gtts import gTTS
-import simpleaudio as sa
+import pygame
 import os
 
 def clean_text(text):
@@ -20,9 +20,11 @@ def respond_to_text(text):
 def text_to_speech(text):
     tts = gTTS(text=text, lang='ru')
     tts.save("response.mp3")
-    wave_obj = sa.WaveObject.from_wave_file("response.mp3")
-    play_obj = wave_obj.play()
-    play_obj.wait_done()
+    pygame.mixer.init()
+    pygame.mixer.music.load("response.mp3")
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        continue
     os.remove("response.mp3")
 
 def record_audio(filename):
