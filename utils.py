@@ -3,6 +3,7 @@ import wave
 from gtts import gTTS
 import pygame
 import os
+import time
 
 def clean_text(text):
     return text.strip().lower()
@@ -24,8 +25,11 @@ def text_to_speech(text):
     pygame.mixer.music.load("response.mp3")
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
-        continue
-    os.remove("response.mp3")
+        time.sleep(0.1)
+    try:
+        os.remove("response.mp3")
+    except PermissionError:
+        print("Не удалось удалить файл, так как он занят другим процессом.")
 
 def record_audio(filename):
     chunk = 1024
