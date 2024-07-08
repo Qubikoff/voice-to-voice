@@ -1,7 +1,8 @@
 import pyaudio
 import wave
 from gtts import gTTS
-import playsound
+import simpleaudio as sa
+import os
 
 def clean_text(text):
     return text.strip().lower()
@@ -19,7 +20,9 @@ def respond_to_text(text):
 def text_to_speech(text):
     tts = gTTS(text=text, lang='ru')
     tts.save("response.mp3")
-    playsound.playsound("response.mp3")
+    wave_obj = sa.WaveObject.from_wave_file("response.mp3")
+    play_obj = wave_obj.play()
+    play_obj.wait_done()
     os.remove("response.mp3")
 
 def record_audio(filename):
