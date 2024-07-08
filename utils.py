@@ -30,13 +30,12 @@ def record_audio(filename):
 
     p = pyaudio.PyAudio()
 
+    print("Произнесите текст после звукового сигнала...")
     stream = p.open(format=format,
                     channels=channels,
                     rate=rate,
                     input=True,
                     frames_per_buffer=chunk)
-
-    print("Recording...")
 
     frames = []
 
@@ -44,7 +43,7 @@ def record_audio(filename):
         data = stream.read(chunk)
         frames.append(data)
 
-    print("Recording finished")
+    print("Запись закончена.")
 
     stream.stop_stream()
     stream.close()
