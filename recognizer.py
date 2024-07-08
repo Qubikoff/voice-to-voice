@@ -65,7 +65,7 @@ def recognize_wit(filename):
 
 def recognize_vosk(filename):
     wf = wave.open(filename, "rb")
-    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getframerate() not in (8000, 16000, 32000, 44100, 48000):
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 или wf.getframerate() не в (8000, 16000, 32000, 44100, 48000):
         print("Файл должен быть монофоническим, 16 бит и с частотой 8000, 16000, 32000, 44100 или 48000 Гц")
         return "", 0
     
@@ -73,7 +73,7 @@ def recognize_vosk(filename):
     start_time = time.time()
     while True:
         data = wf.readframes(4000)
-        if len(data) == 0:
+        если len(data) == 0:
             break
         if rec.AcceptWaveform(data):
             result = rec.Result()
@@ -89,26 +89,32 @@ def recognize_vosk(filename):
     return final_text.lower(), end_time - start_time
 
 def compare_models(filename):
-    reference_text = "Я сегодня не приду домой"  # Эталонный текст
-    google_text, google_time = recognize_google(filename)
-    wit_text, wit_time = recognize_wit(filename)
-    vosk_text, vosk_time = recognize_vosk(filename)
-
-    google_accuracy = SequenceMatcher(None, reference_text.lower(), google_text.lower()).ratio()
-    wit_accuracy = SequenceMatcher(None, reference_text.lower(), wit_text.lower()).ratio()
-    vosk_accuracy = SequenceMatcher(None, reference_text.lower(), vosk_text.lower()).ratio()
-
-    best_model = max((google_text, google_time, google_accuracy, "Google"), 
-                     (wit_text, wit_time, wit_accuracy, "Wit.ai"), 
-                     (vosk_text, vosk_time, vosk_accuracy, "Vosk"), 
-                     key=lambda x: x[2])
+    reference_texts = ["привет я разработчик", "я сегодня не приду домой"]
+    best_model_results = []
     
-    print(f"Google Speech-to-Text: {google_text} (Time: {google_time:.2f} seconds, Accuracy: {google_accuracy:.2f})")
-    print(f"Wit.ai: {wit_text} (Time: {wit_time:.2f} seconds, Accuracy: {wit_accuracy:.2f})")
-    print(f"Vosk: {vosk_text} (Time: {vosk_time:.2f} seconds, Accuracy: {vosk_accuracy:.2f})")
-    print(f"\nBest Model: {best_model[3]}")
-    print(f"Recognized Text: {best_model[0]}")
-    print(f"Time: {best_model[1]:.2f} seconds")
-    print(f"Accuracy: {best_model[2]:.2f}")
+    for reference_text in reference_texts:
+        google_text, google_time = recognize_google(filename)
+        wit_text, wit_time = recognize_wit(filename)
+        vosk_text, vosk_time = recognize_vosk(filename)
+
+        google_accuracy = SequenceMatcher(None, reference_text.lower(), google_text.lower()).ratio()
+        wit_accuracy = SequenceMatcher(None, reference_text.lower(), wit_text.lower()).ratio()
+        vosk_accuracy = SequenceMatcher(None, reference_text.lower(), vosk_text.lower()).ratio()
+
+        best_model = max((google_text, google_time, google_accuracy, "Google"), 
+                         (wit_text, wit_time, wit_accuracy, "Wit.ai"), 
+                         (vosk_text, vosk_time, vosk_accuracy, "Vosk"), 
+                         key=lambda x: x[2])
+        
+        print("\nОценка распознавания речи:")
+        print(f"Google Speech-to-Text: {google_text} (Time: {google_time:.2f} seconds, Accuracy: {google_accuracy:.2f})")
+        print(f"Wit.ai: {wit_text} (Time: {wit_time:.2f} seconds, Accuracy: {wit_accuracy:.2f})")
+        print(f"Vosk: {vosk_text} (Time: {vosk_time:.2f} seconds, Accuracy: {vosk_accuracy:.2f})")
+        print(f"\nBest Model: {best_model[3]}")
+        print(f"Recognized Text: {best_model[0]}")
+        print(f"Time: {best_model[1]:.2f} seconds")
+        print(f"Accuracy: {best_model[2]:.2f}")
+        
+        best_model_results.append(best_model[0])
     
-    return best_model[0]
+    return best_model_results
