@@ -3,6 +3,7 @@ import json
 import os
 import wave
 import requests
+import zipfile
 from wit import Wit
 import vosk
 import speech_recognition as sr
@@ -25,7 +26,8 @@ if not os.path.exists(model_dir):
             file.write(chunk)
     
     # Распаковка модели
-    subprocess.run(["unzip", model_path, "-d", "model"], check=True)
+    with zipfile.ZipFile(model_path, 'r') as zip_ref:
+        zip_ref.extractall("model")
     os.remove(model_path)
 
 vosk_model = vosk.Model(model_dir)
