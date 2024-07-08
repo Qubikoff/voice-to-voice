@@ -3,6 +3,6 @@ vosk
 gtts
 pyaudio
 SpeechRecognition
-ffmpeg-python
 ipython
 requests
+playsound
