@@ -1,0 +1,7 @@
+wit
+vosk
+gtts
+pyaudio
+SpeechRecognition
+ffmpeg-python
+ipython
