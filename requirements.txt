@@ -5,4 +5,4 @@ pyaudio
 SpeechRecognition
 ipython
 requests
-playsound
+simpleaudio
