@@ -2,6 +2,7 @@ import time
 import json
 import os
 import wave
+import requests
 from wit import Wit
 import vosk
 import speech_recognition as sr
@@ -11,10 +12,23 @@ from difflib import SequenceMatcher
 wit_token = "NFHOGPON4IXGC6IH2AAIW5FF7ATMYZBI"
 wit_client = Wit(wit_token)
 
-if not os.path.exists("model"):
-    subprocess.run(["wget", "https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip"])
-    subprocess.run(["unzip", "vosk-model-small-ru-0.22.zip", "-d", "model"])
-vosk_model = vosk.Model("model/vosk-model-small-ru-0.22")
+# Инициализация Vosk модели
+model_url = "https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip"
+model_path = "vosk-model-small-ru-0.22.zip"
+model_dir = "model/vosk-model-small-ru-0.22"
+
+if not os.path.exists(model_dir):
+    # Загрузка модели
+    response = requests.get(model_url, stream=True)
+    with open(model_path, "wb") as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            file.write(chunk)
+    
+    # Распаковка модели
+    subprocess.run(["unzip", model_path, "-d", "model"], check=True)
+    os.remove(model_path)
+
+vosk_model = vosk.Model(model_dir)
 
 recognizer = sr.Recognizer()
 
@@ -90,6 +104,7 @@ def recognize_vosk(filename):
     return final_text.lower(), end_time - start_time
 
 def compare_models(filename):
+    reference_text = "Я сегодня не приду домой"  # Эталонный текст
     google_text, google_time = recognize_google(filename)
     wit_text, wit_time = recognize_wit(filename)
     vosk_text, vosk_time = recognize_vosk(filename)
