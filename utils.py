@@ -1,7 +1,7 @@
 import pyaudio
 import wave
 from gtts import gTTS
-from IPython.display import Audio, display
+import playsound
 
 def clean_text(text):
     return text.strip().lower()
@@ -19,7 +19,8 @@ def respond_to_text(text):
 def text_to_speech(text):
     tts = gTTS(text=text, lang='ru')
     tts.save("response.mp3")
-    display(Audio("response.mp3", autoplay=True))
+    playsound.playsound("response.mp3")
+    os.remove("response.mp3")
 
 def record_audio(filename):
     chunk = 1024
@@ -30,7 +31,7 @@ def record_audio(filename):
 
     p = pyaudio.PyAudio()
 
-    print("Произнесите текст после звукового сигнала...")
+    print("Начинается запись. Пожалуйста, произнесите ваш текст...")
     stream = p.open(format=format,
                     channels=channels,
                     rate=rate,
